@@ -265,6 +265,111 @@
     .check b { display:block; margin-bottom:4px; }
     .check span { color:var(--muted); font-size:14px; }
 
+
+    .support-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 190px;
+      gap:28px;
+      align-items:center;
+      border-radius:var(--radius);
+      padding:28px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+    }
+    .support-card h2 { margin-bottom:10px; }
+    .support-copy { color:var(--muted); max-width:620px; margin:0; }
+    .support-copy strong { color:var(--text); }
+    .support-qr {
+      margin:0;
+      padding:12px;
+      border-radius:18px;
+      background:var(--surface-strong);
+      border:1px solid var(--line);
+      text-align:center;
+    }
+    .support-qr img {
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      object-fit:contain;
+      border-radius:12px;
+      background:#fff;
+    }
+    .qr-zoom {
+      display:block;
+      width:100%;
+      padding:0;
+      border:0;
+      border-radius:12px;
+      background:transparent;
+      cursor:zoom-in;
+    }
+    .qr-zoom:focus-visible {
+      outline:3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      outline-offset:4px;
+    }
+    .support-qr figcaption {
+      margin-top:9px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .qr-dialog {
+      width:min(92vw, 680px);
+      max-width:none;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:var(--surface-strong);
+      box-shadow:0 24px 80px rgba(31, 24, 45, .22);
+    }
+    .qr-dialog::backdrop {
+      background:rgba(26, 22, 35, .58);
+      backdrop-filter:blur(6px);
+    }
+    .qr-dialog-inner {
+      position:relative;
+      display:grid;
+      place-items:center;
+      gap:12px;
+    }
+    .qr-dialog img {
+      display:block;
+      width:min(82vw, 560px);
+      max-height:78vh;
+      object-fit:contain;
+      border-radius:16px;
+      background:#fff;
+    }
+    .qr-dialog p {
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+    }
+    .qr-dialog-close {
+      position:absolute;
+      top:8px;
+      right:8px;
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(255,255,255,.82);
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:#26232b;
+      font-size:24px;
+      line-height:1;
+      cursor:pointer;
+      box-shadow:0 4px 18px rgba(0,0,0,.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      .qr-dialog-close { border-color:rgba(255,255,255,.25); }
+    }
+
     footer { padding: 10px 0 60px; color: var(--muted); font-size: 14px; }
     footer .foot { border-top:1px solid var(--line); padding-top:24px; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
 
@@ -530,7 +635,32 @@
         </ol>
       </div>
     </section>
+
+
+    <section id="support">
+      <div class="support-card">
+        <div>
+          <span class="pill">支持作者</span>
+          <h2>请作者喝瓶快乐水</h2>
+          <p class="support-copy">这篇教程没有收费。如果它帮你少踩了一个坑，可以请作者喝瓶快乐水。<br><strong>完全自愿，不影响教程的任何内容。</strong></p>
+        </div>
+        <figure class="support-qr">
+          <button class="qr-zoom" type="button" aria-label="放大支付宝商家收款码" aria-haspopup="dialog" aria-controls="qrDialog">
+            <img src="./ailpay.png" alt="支付宝商家收款码" loading="lazy">
+          </button>
+          <figcaption>支付宝商家码 · 点击放大后扫码支持作者</figcaption>
+        </figure>
+      </div>
+    </section>
   </main>
+
+  <dialog class="qr-dialog" id="qrDialog" aria-label="支付宝商家收款码大图">
+    <div class="qr-dialog-inner">
+      <button class="qr-dialog-close" type="button" aria-label="关闭">×</button>
+      <img src="./ailpay.png" alt="支付宝商家收款码大图">
+      <p>支付宝商家码 · 扫码支持作者</p>
+    </div>
+  </dialog>
 
   <footer class="wrap">
     <div class="foot">
@@ -538,5 +668,20 @@
       <span>页面不隶属于 2dust、v2rayNG、v2rayN 或任何节点服务商，不构成商业背书。</span>
     </div>
   </footer>
+  <script>
+    (() => {
+      const trigger = document.querySelector('.qr-zoom');
+      const dialog = document.getElementById('qrDialog');
+      const closeButton = dialog?.querySelector('.qr-dialog-close');
+
+      if (!trigger || !dialog) return;
+
+      trigger.addEventListener('click', () => dialog.showModal());
+      closeButton?.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+    })();
+  </script>
 </body>
 </html>
