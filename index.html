@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f7f5fb" />
+  <title>校园网络小白指南｜v2rayNG + 节点到底是什么？</title>
+  <meta name="description" content="写给第一次接触 v2rayNG、订阅和节点的校园用户：看懂客户端与节点的区别，学会导入订阅、挑节点、判断服务商和排查常见问题。" />
+  <style>
+    :root {
+      --bg: #f7f5fb;
+      --surface: rgba(255,255,255,.82);
+      --surface-strong: #ffffff;
+      --text: #26242a;
+      --muted: #74707c;
+      --line: #e7e2ec;
+      --accent: #765b8e;
+      --accent-soft: #efe8f5;
+      --good: #2f775a;
+      --good-soft: #e7f5ed;
+      --warn: #956d22;
+      --warn-soft: #fff3d6;
+      --bad: #9a4851;
+      --bad-soft: #fdecef;
+      --shadow: 0 18px 60px rgba(50, 37, 65, .08);
+      --radius: 24px;
+      --radius-sm: 16px;
+      --max: 1080px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #17151a;
+        --surface: rgba(35,32,39,.82);
+        --surface-strong: #242127;
+        --text: #f0edf2;
+        --muted: #aaa3af;
+        --line: #3a3540;
+        --accent: #c5a8d8;
+        --accent-soft: #3a2f43;
+        --good: #8ed2af;
+        --good-soft: #20372b;
+        --warn: #efca7c;
+        --warn-soft: #41371f;
+        --bad: #ec9ba3;
+        --bad-soft: #41282d;
+        --shadow: 0 18px 60px rgba(0,0,0,.22);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 8%, rgba(216,194,233,.22), transparent 28rem),
+        radial-gradient(circle at 88% 12%, rgba(200,220,244,.2), transparent 28rem),
+        var(--bg);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.72;
+      letter-spacing: .01em;
+    }
+
+    a { color: inherit; }
+    .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    }
+    .topbar .inner {
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { font-weight: 760; letter-spacing: -.02em; }
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 999px;
+    }
+    .nav a:hover { background: var(--accent-soft); color: var(--text); }
+
+    header { padding: 78px 0 38px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      max-width: 850px;
+      font-size: clamp(38px, 7vw, 72px);
+      line-height: 1.03;
+      letter-spacing: -.055em;
+      margin: 0 0 22px;
+      font-weight: 800;
+    }
+    .lead {
+      max-width: 780px;
+      color: var(--muted);
+      font-size: clamp(17px, 2.2vw, 21px);
+      margin: 0 0 30px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 17px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 720;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+    }
+    .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    .hero-card, .card, .step, .compare, .note, details {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .hero-card { margin-top: 42px; border-radius: var(--radius); padding: 28px; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+    .flow-box {
+      min-height: 120px;
+      padding: 20px;
+      border-radius: 20px;
+      background: var(--surface-strong);
+      border: 1px solid var(--line);
+    }
+    .flow-box strong { display:block; font-size:18px; margin-bottom:4px; }
+    .flow-box span { color:var(--muted); font-size:14px; }
+    .arrow { color: var(--muted); font-size: 22px; }
+
+    main { padding: 20px 0 90px; }
+    section { scroll-margin-top: 84px; padding: 42px 0; }
+    h2 { font-size: clamp(28px, 4vw, 42px); letter-spacing: -.035em; margin: 0 0 12px; line-height: 1.12; }
+    h3 { font-size: 20px; margin: 0 0 8px; letter-spacing: -.015em; }
+    .section-intro { color: var(--muted); max-width: 760px; margin: 0 0 24px; }
+
+    .grid-2 { display:grid; grid-template-columns: repeat(2, 1fr); gap:18px; }
+    .grid-3 { display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; }
+    .card { border-radius: var(--radius); padding: 24px; }
+    .card p { color: var(--muted); margin: 8px 0 0; }
+    .pill {
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:760;
+      background:var(--accent-soft);
+      color:var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .compare { border-radius: var(--radius); overflow: hidden; }
+    .compare-row { display:grid; grid-template-columns: 160px 1fr 1fr; border-top:1px solid var(--line); }
+    .compare-row:first-child { border-top:none; }
+    .compare-row > div { padding:18px 20px; border-left:1px solid var(--line); }
+    .compare-row > div:first-child { border-left:none; color:var(--muted); font-size:14px; }
+    .compare .head { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); font-weight:760; }
+
+    .steps { display:grid; gap:15px; counter-reset: step; }
+    .step { border-radius:20px; padding:22px 22px 22px 72px; position:relative; }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position:absolute;
+      left:22px; top:22px;
+      width:34px; height:34px;
+      display:grid; place-items:center;
+      border-radius:12px;
+      background:var(--text); color:var(--bg);
+      font-weight:800;
+    }
+    .step p { color:var(--muted); margin:7px 0 0; }
+
+    .note {
+      border-radius: 20px;
+      padding: 20px 22px;
+      box-shadow: none;
+      margin: 18px 0;
+    }
+    .note.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 28%, var(--line)); }
+    .note.warn { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 28%, var(--line)); }
+    .note.bad { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 28%, var(--line)); }
+    .note strong { display:block; margin-bottom:4px; }
+
+    .score { display:grid; gap:13px; }
+    .score-item { display:grid; grid-template-columns: 120px 1fr auto; gap:14px; align-items:center; }
+    .bar { height:9px; background:var(--line); border-radius:999px; overflow:hidden; }
+    .bar > i { display:block; height:100%; background:var(--accent); border-radius:inherit; }
+    .score-item small { color:var(--muted); }
+
+    .mini-list { margin: 12px 0 0; padding-left: 20px; }
+    .mini-list li { margin: 8px 0; }
+    code {
+      background: color-mix(in srgb, var(--accent-soft) 74%, transparent);
+      padding: 2px 6px;
+      border-radius: 7px;
+      font-size: .92em;
+      overflow-wrap: anywhere;
+    }
+
+    details { border-radius:18px; padding:0 20px; box-shadow:none; }
+    details + details { margin-top: 12px; }
+    summary { cursor:pointer; font-weight:740; padding:18px 0; }
+    details p { color:var(--muted); margin:0 0 18px; }
+
+    .checklist { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .check {
+      padding:16px 18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--surface-strong);
+    }
+    .check b { display:block; margin-bottom:4px; }
+    .check span { color:var(--muted); font-size:14px; }
+
+    footer { padding: 10px 0 60px; color: var(--muted); font-size: 14px; }
+    footer .foot { border-top:1px solid var(--line); padding-top:24px; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+
+    @media (max-width: 760px) {
+      .nav { display:none; }
+      header { padding-top: 54px; }
+      .flow { grid-template-columns:1fr; }
+      .arrow { transform: rotate(90deg); text-align:center; }
+      .grid-2, .grid-3, .checklist { grid-template-columns:1fr; }
+      .compare-row { grid-template-columns:1fr; }
+      .compare-row > div { border-left:none; border-top:1px solid var(--line); }
+      .compare-row > div:first-child { border-top:none; padding-bottom:8px; }
+      .score-item { grid-template-columns:90px 1fr; }
+      .score-item small { grid-column:2; }
+      .hero-card { padding:18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap inner">
+      <div class="brand">校园网络小白指南</div>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#what">先搞懂</a>
+        <a href="#install">怎么用</a>
+        <a href="#nodes">挑节点</a>
+        <a href="#provider">选服务商</a>
+        <a href="#faq">救命区</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="wrap">
+    <div class="eyebrow">Android · v2rayNG · 零基础友好</div>
+    <h1>别再把“软件”和“节点”当成同一个东西啦。</h1>
+    <p class="lead">这是一份写给普通校园用户的 v2rayNG 入门。你不需要懂服务器、协议、端口，也不需要手搓配置。只要记住一件事：<b>v2rayNG 是客户端，节点/订阅才是你购买或获取的网络服务。</b></p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#quickstart">直接看 3 分钟上手</a>
+      <a class="btn" href="#what">先看“为什么要这样用”</a>
+    </div>
+
+    <div class="hero-card" aria-label="工作流程示意">
+      <div class="flow">
+        <div class="flow-box"><strong>v2rayNG</strong><span>像一个“播放器 / 遥控器”<br>负责读取配置并连接</span></div>
+        <div class="arrow">→</div>
+        <div class="flow-box"><strong>订阅 / 节点</strong><span>像“会员内容 / 线路”<br>由服务商提供</span></div>
+        <div class="arrow">→</div>
+        <div class="flow-box"><strong>访问网络</strong><span>选一个合适的节点<br>再由 v2rayNG 发起连接</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="what">
+      <h2>01｜它和“一体化 VPN App”有什么不同？</h2>
+      <p class="section-intro">应用商店里常见的一体化 VPN，通常把“客户端 + 账号 + 线路 + 付款”全部打包在一个 App 里；v2rayNG 把客户端这一层单独拆出来。</p>
+
+      <div class="compare">
+        <div class="compare-row head">
+          <div>对比</div><div>一体化 VPN App</div><div>v2rayNG + 节点</div>
+        </div>
+        <div class="compare-row"><div>你装的东西</div><div>软件里已经带服务</div><div>只装客户端，服务另外找</div></div>
+        <div class="compare-row"><div>换线路</div><div>通常只能用它家自己的</div><div>可以更换不同服务商或订阅</div></div>
+        <div class="compare-row"><div>难度</div><div>最低，登录就能点连接</div><div>多一步：把订阅导入客户端</div></div>
+        <div class="compare-row"><div>自由度</div><div>较低</div><div>较高，可以自己选线路和客户端</div></div>
+        <div class="compare-row"><div>出了问题</div><div>通常只能等 App 方修</div><div>可以判断是客户端问题还是节点问题</div></div>
+      </div>
+
+      <div class="note good"><strong>最简单的理解</strong>v2rayNG ≈ “网易云音乐 App”，订阅 ≈ “你的歌单/会员内容”，节点 ≈ “具体某一首歌”。App 本身并不会凭空给你网络线路。</div>
+    </section>
+
+    <section id="quickstart">
+      <h2>02｜3 分钟上手：你真正要做的只有这些</h2>
+      <p class="section-intro">如果你已经有服务商给你的订阅链接，下面几步就够用了。不同版本按钮名称可能略有差异，但逻辑基本一样。</p>
+
+      <div class="steps">
+        <article class="step"><h3>安装 v2rayNG</h3><p>优先从项目官方 GitHub Releases 获取，不要随手下载搜索引擎里来历不明的“魔改 APK”。Android 安装时可能会提醒“来自未知来源”，这是因为它不是从手机应用商店安装。</p></article>
+        <article class="step"><h3>拿到你的“订阅链接”</h3><p>购买节点服务后，服务商一般会给你一串以 <code>https://...</code> 开头的订阅地址，或者给一个二维码。这个链接很像账号密码，<b>不要发群里、不要截图公开</b>。</p></article>
+        <article class="step"><h3>把订阅导入 v2rayNG</h3><p>在 v2rayNG 里找到“订阅 / Subscription”相关入口，新建订阅并粘贴链接，然后更新订阅。某些版本也支持从二维码、剪贴板或本地配置文件导入。</p></article>
+        <article class="step"><h3>从节点列表里选一个</h3><p>先选离你比较近、名字正常的地区，例如香港、日本、新加坡等；如果你是为了特定地区服务，再选择目标国家或地区。</p></article>
+        <article class="step"><h3>点右下角连接按钮</h3><p>Android 第一次会弹出“VPN 连接请求”，允许即可。这里的 VPN 权限是 Android 提供的本地隧道接口，并不代表你正在使用传统的一体化 VPN 服务。</p></article>
+      </div>
+
+      <div class="note warn"><strong>看到几十个节点别慌</strong>你完全不需要理解 <code>VLESS</code>、<code>VMess</code>、<code>Trojan</code>、<code>Hysteria2</code> 这些名字。普通使用时，把它们当成“不同连接方式”就好，服务商给什么就用什么。</div>
+    </section>
+
+    <section id="install">
+      <h2>03｜订阅、节点、流量，到底分别是什么？</h2>
+      <div class="grid-3">
+        <article class="card"><span class="pill">订阅</span><h3>一张会自动更新的“节点清单”</h3><p>你保存的是一个订阅地址。更新订阅后，服务商新增、删除或修改的节点会同步进来，所以一般不需要一个个手动添加。</p></article>
+        <article class="card"><span class="pill">节点</span><h3>你真正连接的某一条线路</h3><p>例如“香港 01”“日本 02”“新加坡 IPLC”等。你每次实际使用的是其中一个节点。</p></article>
+        <article class="card"><span class="pill">流量</span><h3>服务商套餐的用量</h3><p>比如每月 100 GB、200 GB。看视频、下大文件最耗流量；普通网页、聊天和文档相对少得多。</p></article>
+      </div>
+    </section>
+
+    <section id="nodes">
+      <h2>04｜节点怎么选？别只盯着“延迟最低”</h2>
+      <p class="section-intro">延迟当然重要，但它只回答“现在测这一瞬间有多快”，并不能完整代表晚高峰稳定性、丢包、带宽和服务商线路质量。</p>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>日常网页 / ChatGPT / Google</h3>
+          <p>优先选地理位置近、延迟低且稳定的节点。校园网环境里，香港、日本、新加坡通常是很自然的第一轮候选；哪个实际打开网页顺滑，就用哪个。</p>
+        </article>
+        <article class="card">
+          <h3>看特定地区内容</h3>
+          <p>如果服务明确要求某个地区，例如只对美国 IP 开放，那就选美国节点。此时“地区正确”比“延迟少 20 ms”更重要。</p>
+        </article>
+        <article class="card">
+          <h3>视频 / 大文件</h3>
+          <p>更看重实际带宽和稳定性。一个 80 ms 但能持续跑满带宽的节点，常常比 35 ms 但不停掉速的节点体验好。</p>
+        </article>
+        <article class="card">
+          <h3>晚上 8–11 点</h3>
+          <p>这是最值得测试的时间。白天飞快、晚上一到宿舍就卡成 PPT 的线路，对校园用户来说意义不大。</p>
+        </article>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>一个更实用的“节点评分法”</h3>
+        <div class="score" style="margin-top:18px">
+          <div class="score-item"><b>稳定性</b><div class="bar"><i style="width:95%"></i></div><small>最重要</small></div>
+          <div class="score-item"><b>晚高峰</b><div class="bar"><i style="width:90%"></i></div><small>宿舍用户重点</small></div>
+          <div class="score-item"><b>带宽</b><div class="bar"><i style="width:82%"></i></div><small>视频/下载重要</small></div>
+          <div class="score-item"><b>延迟</b><div class="bar"><i style="width:68%"></i></div><small>重要，但不是唯一</small></div>
+          <div class="score-item"><b>节点数量</b><div class="bar"><i style="width:45%"></i></div><small>够用即可</small></div>
+        </div>
+      </div>
+
+      <div class="note bad"><strong>一个常见误区</strong>“香港 01：28 ms”不等于它就一定比“日本 02：65 ms”快。延迟测试可能受当时网络、测试方式和节点协议影响；最终以你真正打开网页、视频缓冲和长时间使用是否稳定为准。</div>
+    </section>
+
+    <section id="provider">
+      <h2>05｜完全不知道买什么服务商，怎么看？</h2>
+      <p class="section-intro">第一次买最容易被“1000+ 节点、全球覆盖、超低价”这种宣传迷惑。普通校园用户真正需要的是：稳定、别跑路、订阅好用、出问题有人处理。</p>
+
+      <div class="checklist">
+        <div class="check"><b>先买短周期</b><span>优先月付，不要第一次就冲两年或三年。</span></div>
+        <div class="check"><b>看晚高峰表现</b><span>比白天测速图更有意义。</span></div>
+        <div class="check"><b>看套餐是否够用</b><span>日常 100–200 GB 往往比“无限节点”更实在。</span></div>
+        <div class="check"><b>别迷信节点数量</b><span>20 个能用的，通常比 300 个摆设好。</span></div>
+        <div class="check"><b>看是否支持订阅</b><span>能直接导入 v2rayNG，省去手动配置。</span></div>
+        <div class="check"><b>保留备用方案</b><span>考试周、赶 ddl 时不要只剩一条线。</span></div>
+      </div>
+
+      <div class="note good"><strong>实在完全不知道从哪开始</strong>可以把 <b>v2rayNG 官方渠道中出现的赞助 / 推广</b> 当作“候选名单的入口”去看看，再自己比较价格、套餐、晚高峰口碑和退款规则。<b>赞助或推广 ≠ 官方安全认证，也不代表一定最适合你</b>，所以更推荐先月付、小额试用。</div>
+
+      <div class="grid-2" style="margin-top:18px">
+        <article class="card">
+          <h3>更适合普通学生的买法</h3>
+          <ul class="mini-list">
+            <li>先买 1 个月，别一次投入太多。</li>
+            <li>套餐够用即可，不追求“无限流量”。</li>
+            <li>至少有香港 / 日本 / 新加坡一类近区节点。</li>
+            <li>最好有工单、公告频道或明确的故障说明。</li>
+            <li>付款前先看退款与套餐重置规则。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>看到这些要多想一下</h3>
+          <ul class="mini-list">
+            <li>价格低得离谱，还承诺永久套餐。</li>
+            <li>要求你下载它自己不明来源的魔改客户端。</li>
+            <li>完全找不到公告、支持渠道或服务条款。</li>
+            <li>只晒极限测速，不展示晚高峰稳定性。</li>
+            <li>催你一次买很长周期，短期套餐反而很贵。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <h2>06｜隐私和安全：有两句话一定要记住</h2>
+      <div class="grid-2">
+        <article class="card"><span class="pill">第一句</span><h3>订阅链接 ≈ 密码</h3><p>别人拿到你的订阅地址，可能就能导入你的节点、消耗你的流量，甚至导致账号被封。不要发朋友圈、群聊、公开截图，也不要交给陌生“测速网站”。</p></article>
+        <article class="card"><span class="pill">第二句</span><h3>节点服务商需要你信任</h3><p>代理服务商会处在你的网络路径中。使用 HTTPS 的网站时，网页正文和密码通常仍由 HTTPS 加密，但服务商可能看到部分连接元数据，例如你连接了哪些 IP/域名、时间和流量大小。</p></article>
+      </div>
+      <div class="note warn"><strong>学校网络也有自己的规则</strong>请遵守你所在地法律、学校网络管理规定和服务条款。校园网如果限制了某类连接，不建议为了“硬刚网络策略”去安装来历不明的破解工具。</div>
+    </section>
+
+    <section id="faq">
+      <h2>07｜救命区：最常见的几个问题</h2>
+      <p class="section-intro">大部分“突然不能用”其实不需要重装手机，也不需要研究协议。</p>
+
+      <details><summary>导入订阅后一个节点都没有？</summary><p>先确认订阅地址有没有复制完整、套餐是否过期，然后手动“更新订阅”。如果服务商网页能正常登录但 v2rayNG 更新失败，可能是订阅格式、当前网络或服务商端故障，优先看服务商公告。</p></details>
+      <details><summary>有节点，但点连接后打不开网页？</summary><p>先换另一个节点；如果所有节点都不行，再更新订阅、切换 Wi‑Fi / 蜂窝网络、重启 v2rayNG。只有“全部节点都不行”时，才更像是订阅、客户端或网络环境的问题。</p></details>
+      <details><summary>为什么延迟显示很好，实际还是卡？</summary><p>延迟测试只是很小的一次连接测试，不能代表持续带宽、拥塞和丢包。尤其晚高峰，实际刷网页和播放视频比单个 ms 数字更可信。</p></details>
+      <details><summary>为什么学校 Wi‑Fi 不行，手机流量却可以？</summary><p>这通常意味着两种网络的限制、DNS、IPv6、NAT 或路由情况不同。最简单的处理方式是换节点，并向服务商确认是否有更适合校园网/移动网络的线路。</p></details>
+      <details><summary>“全局代理”和“规则代理”选哪个？</summary><p>新手默认用服务商或客户端给的常规规则即可。全局模式会让更多流量都经过节点，更简单但可能更耗流量、访问国内服务也更慢；规则模式则会按规则决定哪些走代理、哪些直连。</p></details>
+      <details><summary>是不是节点越贵越好？</summary><p>不一定。贵可能代表更好的带宽、专线或更少的用户，也可能只是营销。最靠谱的办法仍然是月付实测，尤其测试你自己的宿舍网络和常用时间段。</p></details>
+    </section>
+
+    <section id="summary">
+      <h2>最后，真的只需要记住这 6 件事</h2>
+      <div class="card">
+        <ol class="mini-list">
+          <li><b>v2rayNG 是客户端，不是节点服务商。</b></li>
+          <li>服务商通常给你一个订阅链接，导入后才会出现节点。</li>
+          <li>第一次优先选香港 / 日本 / 新加坡等近区节点，再根据实际用途调整。</li>
+          <li>稳定性、晚高峰和带宽，比“最低延迟”更重要。</li>
+          <li>完全不知道买谁，可以把 v2rayNG 官方渠道的赞助推广当候选入口，但要自己做判断。</li>
+          <li>订阅链接别公开；服务商也要选你愿意信任的。</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="foot">
+      <span>写给第一次接触 v2rayNG 的校园用户。</span>
+      <span>页面不隶属于 v2rayNG 或任何节点服务商，不构成商业背书。</span>
+    </div>
+  </footer>
+</body>
+</html>
