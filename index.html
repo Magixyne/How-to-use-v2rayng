@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#f7f5fb" />
-  <title>校园网络小白指南｜v2rayNG + 节点到底是什么？</title>
-  <meta name="description" content="写给第一次接触 v2rayNG、订阅和节点的校园用户：看懂客户端与节点的区别，学会导入订阅、挑节点、判断服务商和排查常见问题。" />
+  <title>校园网络小白指南｜v2rayNG / v2rayN + 节点到底是什么？</title>
+  <meta name="description" content="写给第一次接触 v2rayNG、v2rayN、订阅和节点的校园用户：Android / Windows 从下载安装到导入订阅、挑节点、判断服务商和排查常见问题。" />
   <style>
     :root {
       --bg: #f7f5fb;
@@ -141,6 +141,28 @@
     }
     .hero-card { margin-top: 42px; border-radius: var(--radius); padding: 28px; }
 
+    .download-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:18px; }
+    .download-card {
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--surface-strong);
+      padding:22px;
+    }
+    .download-card .os { color:var(--accent); font-size:13px; font-weight:780; margin-bottom:8px; }
+    .download-card h3 { font-size:23px; margin-bottom:6px; }
+    .download-card p { color:var(--muted); margin:0 0 16px; }
+    .link-row { display:flex; gap:9px; flex-wrap:wrap; }
+    .link-row a {
+      display:inline-flex; align-items:center; min-height:38px; padding:0 12px;
+      border:1px solid var(--line); border-radius:11px; text-decoration:none; font-size:14px; font-weight:700;
+      background:var(--surface);
+    }
+    .link-row a:hover { background:var(--accent-soft); }
+    .mirror-label {
+      display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px;
+      background:var(--warn-soft); color:var(--warn); font-size:12px; font-weight:760; margin-left:6px;
+    }
+
     .flow {
       display: grid;
       grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -251,7 +273,7 @@
       header { padding-top: 54px; }
       .flow { grid-template-columns:1fr; }
       .arrow { transform: rotate(90deg); text-align:center; }
-      .grid-2, .grid-3, .checklist { grid-template-columns:1fr; }
+      .grid-2, .grid-3, .checklist, .download-grid { grid-template-columns:1fr; }
       .compare-row { grid-template-columns:1fr; }
       .compare-row > div { border-left:none; border-top:1px solid var(--line); }
       .compare-row > div:first-child { border-top:none; padding-bottom:8px; }
@@ -267,6 +289,7 @@
       <div class="brand">校园网络小白指南</div>
       <nav class="nav" aria-label="页面导航">
         <a href="#what">先搞懂</a>
+        <a href="#download">先下载</a>
         <a href="#install">怎么用</a>
         <a href="#nodes">挑节点</a>
         <a href="#provider">选服务商</a>
@@ -276,9 +299,9 @@
   </div>
 
   <header class="wrap">
-    <div class="eyebrow">Android · v2rayNG · 零基础友好</div>
-    <h1>别再把“软件”和“节点”当成同一个东西啦。</h1>
-    <p class="lead">这是一份写给普通校园用户的 v2rayNG 入门。你不需要懂服务器、协议、端口，也不需要手搓配置。只要记住一件事：<b>v2rayNG 是客户端，节点/订阅才是你购买或获取的网络服务。</b></p>
+    <div class="eyebrow">Android · Windows · v2rayNG / v2rayN · 零基础友好</div>
+    <h1>手机装 v2rayNG，电脑装 v2rayN。然后再把“节点”装进去。</h1>
+    <p class="lead">这是一份写给普通校园用户的入门。你不需要懂服务器、协议、端口，也不需要手搓配置。只要记住一件事：<b>v2rayNG / v2rayN 是客户端，节点或订阅才是你购买或获取的网络服务。</b></p>
     <div class="hero-actions">
       <a class="btn primary" href="#quickstart">直接看 3 分钟上手</a>
       <a class="btn" href="#what">先看“为什么要这样用”</a>
@@ -286,7 +309,7 @@
 
     <div class="hero-card" aria-label="工作流程示意">
       <div class="flow">
-        <div class="flow-box"><strong>v2rayNG</strong><span>像一个“播放器 / 遥控器”<br>负责读取配置并连接</span></div>
+        <div class="flow-box"><strong>v2rayNG / v2rayN</strong><span>手机 / 电脑上的“播放器”<br>负责读取配置并连接</span></div>
         <div class="arrow">→</div>
         <div class="flow-box"><strong>订阅 / 节点</strong><span>像“会员内容 / 线路”<br>由服务商提供</span></div>
         <div class="arrow">→</div>
@@ -298,11 +321,11 @@
   <main class="wrap">
     <section id="what">
       <h2>01｜它和“一体化 VPN App”有什么不同？</h2>
-      <p class="section-intro">应用商店里常见的一体化 VPN，通常把“客户端 + 账号 + 线路 + 付款”全部打包在一个 App 里；v2rayNG 把客户端这一层单独拆出来。</p>
+      <p class="section-intro">应用商店里常见的一体化 VPN，通常把“客户端 + 账号 + 线路 + 付款”全部打包在一个 App 里；v2rayNG / v2rayN 则把“客户端”这一层单独拆出来。</p>
 
       <div class="compare">
         <div class="compare-row head">
-          <div>对比</div><div>一体化 VPN App</div><div>v2rayNG + 节点</div>
+          <div>对比</div><div>一体化 VPN App</div><div>v2rayNG / v2rayN + 节点</div>
         </div>
         <div class="compare-row"><div>你装的东西</div><div>软件里已经带服务</div><div>只装客户端，服务另外找</div></div>
         <div class="compare-row"><div>换线路</div><div>通常只能用它家自己的</div><div>可以更换不同服务商或订阅</div></div>
@@ -311,26 +334,85 @@
         <div class="compare-row"><div>出了问题</div><div>通常只能等 App 方修</div><div>可以判断是客户端问题还是节点问题</div></div>
       </div>
 
-      <div class="note good"><strong>最简单的理解</strong>v2rayNG ≈ “网易云音乐 App”，订阅 ≈ “你的歌单/会员内容”，节点 ≈ “具体某一首歌”。App 本身并不会凭空给你网络线路。</div>
+      <div class="note good"><strong>最简单的理解</strong>v2rayNG（Android）或 v2rayN（Windows）≈ “网易云音乐 App”，订阅 ≈ “你的歌单/会员内容”，节点 ≈ “具体某一首歌”。客户端本身并不会凭空给你网络线路。</div>
+    </section>
+
+    <section id="download">
+      <h2>02｜先把客户端装对：手机和电脑不是同一个</h2>
+      <p class="section-intro">这两个项目都是 2dust 的开源客户端。名字只差一个字母，很容易第一次就下错：<b>Android 是 v2rayNG，Windows 是 v2rayN。</b>优先走官方 GitHub；如果学校网络连 GitHub 都打不开，再用下面的 SourceForge 同步镜像。</p>
+
+      <div class="download-grid">
+        <article class="download-card">
+          <div class="os">ANDROID 手机 / 平板</div>
+          <h3>v2rayNG</h3>
+          <p>大多数近几年的安卓手机优先选择 <code>arm64-v8a.apk</code>；实在不知道架构，也可以选 <code>universal.apk</code>，只是文件更大。</p>
+          <div class="link-row">
+            <a href="https://github.com/2dust/v2rayNG" target="_blank" rel="noopener noreferrer">GitHub 仓库 ↗</a>
+            <a href="https://github.com/2dust/v2rayNG/releases" target="_blank" rel="noopener noreferrer">官方 Releases ↗</a>
+            <a href="https://sourceforge.net/projects/v2rayng.mirror/files/" target="_blank" rel="noopener noreferrer">SourceForge 镜像 ↗</a>
+          </div>
+        </article>
+
+        <article class="download-card">
+          <div class="os">WINDOWS 电脑</div>
+          <h3>v2rayN</h3>
+          <p>普通 Intel / AMD 的 Windows 10/11 电脑，优先找 <code>v2rayN-windows-64.zip</code>。下载后解压到一个固定文件夹，再运行里面的 v2rayN。</p>
+          <div class="link-row">
+            <a href="https://github.com/2dust/v2rayN" target="_blank" rel="noopener noreferrer">GitHub 仓库 ↗</a>
+            <a href="https://github.com/2dust/v2rayN/releases" target="_blank" rel="noopener noreferrer">官方 Releases ↗</a>
+            <a href="https://sourceforge.net/projects/v2rayn.mirror/files/" target="_blank" rel="noopener noreferrer">SourceForge 镜像 ↗</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="note warn"><strong>GitHub 打不开怎么办？ <span class="mirror-label">备用入口</span></strong>这时可以用上面的 SourceForge 镜像。它是第三方同步镜像，不隶属于 2dust。下载时尽量让<b>版本号、文件名</b>与官方 Release 对得上；更在意安全的话，还可以按官方 Release 提供的 SHA-256 / GPG 签名做校验。</div>
+
+      <div class="note good"><strong>不用到处搜“破解版”</strong>v2rayNG 和 v2rayN 本来就是开源客户端。真正需要另外购买或获取的是“节点 / 订阅”，不是客户端本身。任何声称“付费解锁 v2rayNG/v2rayN 高级版”的页面都值得警惕。</div>
     </section>
 
     <section id="quickstart">
-      <h2>02｜3 分钟上手：你真正要做的只有这些</h2>
-      <p class="section-intro">如果你已经有服务商给你的订阅链接，下面几步就够用了。不同版本按钮名称可能略有差异，但逻辑基本一样。</p>
+      <h2>03｜3 分钟上手：手机和 Windows 分别怎么用？</h2>
+      <p class="section-intro">如果你已经有服务商给你的订阅链接，核心流程其实完全一样：<b>安装客户端 → 导入订阅 → 更新节点 → 选节点 → 开启代理。</b></p>
+
+      <div class="grid-2" style="margin-bottom:18px">
+        <article class="card">
+          <span class="pill">Android · v2rayNG</span>
+          <h3>手机上</h3>
+          <ol class="mini-list">
+            <li>安装 v2rayNG。</li>
+            <li>复制服务商给你的订阅链接。</li>
+            <li>进入订阅设置，新建订阅并粘贴链接。</li>
+            <li>更新订阅，让节点列表出现。</li>
+            <li>选一个节点，点右下角连接按钮。</li>
+            <li>第一次弹出 Android 的“VPN 连接请求”时允许。</li>
+          </ol>
+        </article>
+        <article class="card">
+          <span class="pill">Windows · v2rayN</span>
+          <h3>电脑上</h3>
+          <ol class="mini-list">
+            <li>下载 v2rayN 的 Windows x64 压缩包并解压。</li>
+            <li>打开 v2rayN，找到“订阅分组 / Subscription”相关入口。</li>
+            <li>新建订阅，把服务商给你的订阅链接粘进去。</li>
+            <li>更新订阅，节点会出现在主列表。</li>
+            <li>双击或设为活动服务器，选中你想用的节点。</li>
+            <li>开启系统代理；需要全局接管更多应用时再考虑 TUN 模式。</li>
+          </ol>
+        </article>
+      </div>
 
       <div class="steps">
-        <article class="step"><h3>安装 v2rayNG</h3><p>优先从项目官方 GitHub Releases 获取，不要随手下载搜索引擎里来历不明的“魔改 APK”。Android 安装时可能会提醒“来自未知来源”，这是因为它不是从手机应用商店安装。</p></article>
         <article class="step"><h3>拿到你的“订阅链接”</h3><p>购买节点服务后，服务商一般会给你一串以 <code>https://...</code> 开头的订阅地址，或者给一个二维码。这个链接很像账号密码，<b>不要发群里、不要截图公开</b>。</p></article>
-        <article class="step"><h3>把订阅导入 v2rayNG</h3><p>在 v2rayNG 里找到“订阅 / Subscription”相关入口，新建订阅并粘贴链接，然后更新订阅。某些版本也支持从二维码、剪贴板或本地配置文件导入。</p></article>
+        <article class="step"><h3>把订阅导入客户端</h3><p>v2rayNG 和 v2rayN 都有订阅管理。新建订阅、粘贴链接，再执行“更新订阅”即可。按钮文字随版本变化可能略有差异，但逻辑一样。</p></article>
         <article class="step"><h3>从节点列表里选一个</h3><p>先选离你比较近、名字正常的地区，例如香港、日本、新加坡等；如果你是为了特定地区服务，再选择目标国家或地区。</p></article>
-        <article class="step"><h3>点右下角连接按钮</h3><p>Android 第一次会弹出“VPN 连接请求”，允许即可。这里的 VPN 权限是 Android 提供的本地隧道接口，并不代表你正在使用传统的一体化 VPN 服务。</p></article>
+        <article class="step"><h3>开启连接</h3><p>Android 是开启本地 VPN 接口；Windows 常见做法是让 v2rayN 设置“系统代理”。如果发现某些游戏、商店或 UWP 应用不跟系统代理走，再按需要研究 TUN，不建议新手一上来就乱开高级模式。</p></article>
       </div>
 
       <div class="note warn"><strong>看到几十个节点别慌</strong>你完全不需要理解 <code>VLESS</code>、<code>VMess</code>、<code>Trojan</code>、<code>Hysteria2</code> 这些名字。普通使用时，把它们当成“不同连接方式”就好，服务商给什么就用什么。</div>
     </section>
 
     <section id="install">
-      <h2>03｜订阅、节点、流量，到底分别是什么？</h2>
+      <h2>04｜订阅、节点、流量，到底分别是什么？</h2>
       <div class="grid-3">
         <article class="card"><span class="pill">订阅</span><h3>一张会自动更新的“节点清单”</h3><p>你保存的是一个订阅地址。更新订阅后，服务商新增、删除或修改的节点会同步进来，所以一般不需要一个个手动添加。</p></article>
         <article class="card"><span class="pill">节点</span><h3>你真正连接的某一条线路</h3><p>例如“香港 01”“日本 02”“新加坡 IPLC”等。你每次实际使用的是其中一个节点。</p></article>
@@ -339,7 +421,7 @@
     </section>
 
     <section id="nodes">
-      <h2>04｜节点怎么选？别只盯着“延迟最低”</h2>
+      <h2>05｜节点怎么选？别只盯着“延迟最低”</h2>
       <p class="section-intro">延迟当然重要，但它只回答“现在测这一瞬间有多快”，并不能完整代表晚高峰稳定性、丢包、带宽和服务商线路质量。</p>
 
       <div class="grid-2">
@@ -376,7 +458,7 @@
     </section>
 
     <section id="provider">
-      <h2>05｜完全不知道买什么服务商，怎么看？</h2>
+      <h2>06｜完全不知道买什么服务商，怎么看？</h2>
       <p class="section-intro">第一次买最容易被“1000+ 节点、全球覆盖、超低价”这种宣传迷惑。普通校园用户真正需要的是：稳定、别跑路、订阅好用、出问题有人处理。</p>
 
       <div class="checklist">
@@ -384,11 +466,11 @@
         <div class="check"><b>看晚高峰表现</b><span>比白天测速图更有意义。</span></div>
         <div class="check"><b>看套餐是否够用</b><span>日常 100–200 GB 往往比“无限节点”更实在。</span></div>
         <div class="check"><b>别迷信节点数量</b><span>20 个能用的，通常比 300 个摆设好。</span></div>
-        <div class="check"><b>看是否支持订阅</b><span>能直接导入 v2rayNG，省去手动配置。</span></div>
+        <div class="check"><b>看是否支持订阅</b><span>能直接导入 v2rayNG / v2rayN，省去手动配置。</span></div>
         <div class="check"><b>保留备用方案</b><span>考试周、赶 ddl 时不要只剩一条线。</span></div>
       </div>
 
-      <div class="note good"><strong>实在完全不知道从哪开始</strong>可以把 <b>v2rayNG 官方渠道中出现的赞助 / 推广</b> 当作“候选名单的入口”去看看，再自己比较价格、套餐、晚高峰口碑和退款规则。<b>赞助或推广 ≠ 官方安全认证，也不代表一定最适合你</b>，所以更推荐先月付、小额试用。</div>
+      <div class="note good"><strong>实在完全不知道从哪开始</strong>可以把 <b>v2rayNG / v2rayN 官方项目渠道中出现的赞助 / 推广</b> 当作“候选名单的入口”去看看，再自己比较价格、套餐、晚高峰口碑和退款规则。<b>赞助或推广 ≠ 官方安全认证，也不代表一定最适合你</b>，所以更推荐先月付、小额试用。</div>
 
       <div class="grid-2" style="margin-top:18px">
         <article class="card">
@@ -415,7 +497,7 @@
     </section>
 
     <section id="privacy">
-      <h2>06｜隐私和安全：有两句话一定要记住</h2>
+      <h2>07｜隐私和安全：有两句话一定要记住</h2>
       <div class="grid-2">
         <article class="card"><span class="pill">第一句</span><h3>订阅链接 ≈ 密码</h3><p>别人拿到你的订阅地址，可能就能导入你的节点、消耗你的流量，甚至导致账号被封。不要发朋友圈、群聊、公开截图，也不要交给陌生“测速网站”。</p></article>
         <article class="card"><span class="pill">第二句</span><h3>节点服务商需要你信任</h3><p>代理服务商会处在你的网络路径中。使用 HTTPS 的网站时，网页正文和密码通常仍由 HTTPS 加密，但服务商可能看到部分连接元数据，例如你连接了哪些 IP/域名、时间和流量大小。</p></article>
@@ -424,11 +506,11 @@
     </section>
 
     <section id="faq">
-      <h2>07｜救命区：最常见的几个问题</h2>
+      <h2>08｜救命区：最常见的几个问题</h2>
       <p class="section-intro">大部分“突然不能用”其实不需要重装手机，也不需要研究协议。</p>
 
-      <details><summary>导入订阅后一个节点都没有？</summary><p>先确认订阅地址有没有复制完整、套餐是否过期，然后手动“更新订阅”。如果服务商网页能正常登录但 v2rayNG 更新失败，可能是订阅格式、当前网络或服务商端故障，优先看服务商公告。</p></details>
-      <details><summary>有节点，但点连接后打不开网页？</summary><p>先换另一个节点；如果所有节点都不行，再更新订阅、切换 Wi‑Fi / 蜂窝网络、重启 v2rayNG。只有“全部节点都不行”时，才更像是订阅、客户端或网络环境的问题。</p></details>
+      <details><summary>导入订阅后一个节点都没有？</summary><p>先确认订阅地址有没有复制完整、套餐是否过期，然后手动“更新订阅”。如果服务商网页能正常登录但 v2rayNG / v2rayN 更新失败，可能是订阅格式、当前网络或服务商端故障，优先看服务商公告。</p></details>
+      <details><summary>有节点，但点连接后打不开网页？</summary><p>先换另一个节点；如果所有节点都不行，再更新订阅、切换 Wi‑Fi / 蜂窝网络、重启 v2rayNG / v2rayN。只有“全部节点都不行”时，才更像是订阅、客户端或网络环境的问题。</p></details>
       <details><summary>为什么延迟显示很好，实际还是卡？</summary><p>延迟测试只是很小的一次连接测试，不能代表持续带宽、拥塞和丢包。尤其晚高峰，实际刷网页和播放视频比单个 ms 数字更可信。</p></details>
       <details><summary>为什么学校 Wi‑Fi 不行，手机流量却可以？</summary><p>这通常意味着两种网络的限制、DNS、IPv6、NAT 或路由情况不同。最简单的处理方式是换节点，并向服务商确认是否有更适合校园网/移动网络的线路。</p></details>
       <details><summary>“全局代理”和“规则代理”选哪个？</summary><p>新手默认用服务商或客户端给的常规规则即可。全局模式会让更多流量都经过节点，更简单但可能更耗流量、访问国内服务也更慢；规则模式则会按规则决定哪些走代理、哪些直连。</p></details>
@@ -439,11 +521,11 @@
       <h2>最后，真的只需要记住这 6 件事</h2>
       <div class="card">
         <ol class="mini-list">
-          <li><b>v2rayNG 是客户端，不是节点服务商。</b></li>
+          <li><b>Android 用 v2rayNG，Windows 用 v2rayN；它们都是客户端，不是节点服务商。</b></li>
           <li>服务商通常给你一个订阅链接，导入后才会出现节点。</li>
           <li>第一次优先选香港 / 日本 / 新加坡等近区节点，再根据实际用途调整。</li>
           <li>稳定性、晚高峰和带宽，比“最低延迟”更重要。</li>
-          <li>完全不知道买谁，可以把 v2rayNG 官方渠道的赞助推广当候选入口，但要自己做判断。</li>
+          <li>完全不知道买谁，可以把 v2rayNG / v2rayN 官方项目渠道的赞助推广当候选入口，但要自己做判断。</li>
           <li>订阅链接别公开；服务商也要选你愿意信任的。</li>
         </ol>
       </div>
@@ -452,8 +534,8 @@
 
   <footer class="wrap">
     <div class="foot">
-      <span>写给第一次接触 v2rayNG 的校园用户。</span>
-      <span>页面不隶属于 v2rayNG 或任何节点服务商，不构成商业背书。</span>
+      <span>写给第一次接触 v2rayNG / v2rayN 的校园用户。</span>
+      <span>页面不隶属于 2dust、v2rayNG、v2rayN 或任何节点服务商，不构成商业背书。</span>
     </div>
   </footer>
 </body>
